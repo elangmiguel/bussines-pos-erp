@@ -1,0 +1,27 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('persona_id')->nullable()->after('id')->constrained('personas')->nullOnDelete();
+            $table->foreignId('rol_id')->nullable()->after('persona_id')->constrained('roles')->nullOnDelete();
+            $table->boolean('activo')->default(true)->after('rol_id');
+            $table->timestamp('ultimo_acceso')->nullable()->after('activo');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('persona_id');
+            $table->dropConstrainedForeignId('rol_id');
+            $table->dropColumn(['activo', 'ultimo_acceso']);
+        });
+    }
+};
